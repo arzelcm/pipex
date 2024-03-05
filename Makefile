@@ -6,9 +6,11 @@
 #    By: arcanava <arcanava@student.42barcelona.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/29 11:50:28 by arcanava          #+#    #+#              #
-#    Updated: 2024/02/29 13:12:25 by arcanava         ###   ########.fr        #
+#    Updated: 2024/03/05 16:23:35 by arcanava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+
+# TODO: https://www.gnu.org/software/make/manual/make.html
 
 NAME = pipex
 
@@ -51,24 +53,24 @@ all:
 
 ifndef BONUS
 $(NAME):: $(addprefix $(BIN_DIR), $(OBJS))
-	@echo "$(BLUE)\nLinking objects and creating program...$(DEF_COLOR)"
+	@printf "\r$(BLUE)Linking objects and creating program...$(DEF_COLOR)\n"
 	@cp $(LIBFT_LIB) $(NAME)
 	@$(CC) $(CCFLAGS) $(addprefix $(BIN_DIR), $(OBJS)) $(LIBFT_LIB) -o $(NAME)
-	@echo "$(GREEN)[✓] $(PINK)Pipex$(GREEN) created!!!$(DEF_COLOR)\n"
+	@echo "$(GREEN)[✓] $(PINK)Pipex$(GREEN) created!!!$(DEF_COLOR)"
 else
 $(NAME):: $(addprefix $(BIN_DIR), $(BOBJS))
 #@rm -rf $(addprefix $(BIN_DIR), $(OBJS)) $(addprefix $(BIN_DIR), $(DEPS))
 	@echo "$(BLUE)\nLinking objects and creating binary program...$(DEF_COLOR)"
 	@cp $(LIBFT_LIB) $(NAME)
 	@$(CC) $(CCFLAGS) $(addprefix $(BIN_DIR), $(BOBJS)) -o $(NAME)
-	@echo "$(GREEN)[✓] $(PINK)Pipex Bonus$(GREEN) created!!!$(DEF_COLOR)\n"
+	@echo "$(GREEN)[✓] $(PINK)Pipex Bonus$(GREEN) created!!!$(DEF_COLOR)"
 endif
 
 $(NAME)::
-	@echo "$(YELLOW)Nothing to be done for $(PINK)pipex$(DEF_COLOR)"
+	@printf "\r$(YELLOW)Nothing to be done for $(PINK)pipex$(DEF_COLOR)\n"
 
 $(BIN_DIR)%.o: %.c Makefile
-	@printf "$(CIAN)\rCompiling: $(PINK)$(notdir $<)...$(DEF_COLOR)                   \r"
+	@printf "$(CIAN)\rCompiling: $(PINK)$(notdir $<)...$(DEF_COLOR)\033[2K"
 	@mkdir -p $(BIN_DIR)
 	@$(CC) $(CCFLAGS) -I $(INC_DIR) -MMD -g -c $< -o $@
 
