@@ -1,0 +1,6 @@
+pipex
+
+bin/
+*.o
+
+a.out
