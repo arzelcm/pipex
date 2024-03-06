@@ -1,0 +1,7 @@
+{
+	"files.associations": {
+		"*.Makefile": "makefile",
+		"unistd.h": "c",
+		"pipex.h": "c"
+	}
+}

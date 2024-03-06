@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: arcanava <arcanava@student.42barcelona.    +#+  +:+       +#+         #
+#    By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/29 11:50:28 by arcanava          #+#    #+#              #
-#    Updated: 2024/03/05 16:23:35 by arcanava         ###   ########.fr        #
+#    Updated: 2024/03/06 18:09:51 by arcanava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,8 @@ LIBFT_LIB = $(LIBFT_DIR)libft.a
 BIN_DIR = bin/
 
 #----MANDATORY----#
-SRCS = pipex.c
+SRCS =	pipex.c \
+		utils.c
 OBJS = $(SRCS:%.c=%.o)
 DEPS = $(OBJS:%.o=%.d)
 
@@ -105,11 +106,11 @@ norme:
 	@-norminette $(INC_DIR) $(BONUS_INC_DIR) $(SRCS_DIR) $(BONUS_SRCS_DIR)
 
 compmain: all
-	@echo "\n$(YELLOW)COMPILING MAIN FOR TESTING..."
+	@echo "\n$(GREEN)COMPILING MAIN FOR TESTING..."
 
 main: compmain
 	@echo "$(GREEN)\n------------\nMain result:\n------------\n$(DEF_COLOR)"
-	@./$(NAME)
+	@./$(NAME) input cat caat caaat
 
 m: main
 
