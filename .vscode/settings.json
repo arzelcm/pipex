@@ -2,6 +2,9 @@
 	"files.associations": {
 		"*.Makefile": "makefile",
 		"unistd.h": "c",
-		"pipex.h": "c"
+		"pipex.h": "c",
+		"libft.h": "c",
+		"__locale": "c",
+		"locale": "c"
 	}
 }

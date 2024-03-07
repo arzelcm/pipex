@@ -10,7 +10,7 @@
 			"preLaunchTask": "make",
 			"request": "launch",
 			"program": "${workspaceFolder}/pipex",
-			"args": ["input", "cat", "la", "lala"],
+			"args": ["input", "cat", "date", "output"],
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}",
 			"environment": [],

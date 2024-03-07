@@ -6,7 +6,7 @@
 #    By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/29 11:50:28 by arcanava          #+#    #+#              #
-#    Updated: 2024/03/06 18:09:51 by arcanava         ###   ########.fr        #
+#    Updated: 2024/03/07 17:40:31 by arcanava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,6 +46,9 @@ DEPS = $(OBJS:%.o=%.d)
 BSRCS = ft_printf_bonus.c basic_handle_helper_bonus.c complex_handle_helper_bonus.c padding_helper_bonus.c
 BOBJS = $(BSRCS:%.c=%.o)
 BDEPS = $(BOBJS:%.o=%.d)
+
+#----EXEC----#
+EXEC_PROGRAM = ./$(NAME) input cat cat output
 
 #----RULES----#
 all:
@@ -110,7 +113,8 @@ compmain: all
 
 main: compmain
 	@echo "$(GREEN)\n------------\nMain result:\n------------\n$(DEF_COLOR)"
-	@./$(NAME) input cat caat caaat
+	@echo "see ./output\n"
+	@$(EXEC_PROGRAM)
 
 m: main
 
@@ -122,7 +126,7 @@ mn: nm
 
 leaks: compmain
 	@echo "$(YELLOW)\n------------------------\nChecking leaks atExit...\n------------------------\n$(DEF_COLOR)"
-	@-leaks -quiet -fullContent -atExit -- ./main
+	@-leaks -quiet -fullContent -atExit -- $(EXEC_PROGRAM)
 
 mainclean:
 	@rm -f main
