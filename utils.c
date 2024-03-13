@@ -6,7 +6,7 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 12:39:42 by arcanava          #+#    #+#             */
-/*   Updated: 2024/03/07 14:51:25 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/03/12 20:09:05 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,4 +85,24 @@ void	free_matrix(void **matrix)
 			free(*(matrix + i++));
 		free(matrix);
 	}
+}
+
+int	safe_fork(void)
+{
+	pid_t pid;
+
+	pid = fork();
+	if (pid == -1)
+		error();
+	return (pid);
+}
+
+int	safe_open(const char *path, int mode)
+{
+	int	res;
+
+	res = open(path, mode);
+	if (res == -1)
+		error();
+	return (res);
 }
