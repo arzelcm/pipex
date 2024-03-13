@@ -6,7 +6,7 @@
 #    By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/29 11:50:28 by arcanava          #+#    #+#              #
-#    Updated: 2024/03/07 17:40:31 by arcanava         ###   ########.fr        #
+#    Updated: 2024/03/08 14:10:05 by arcanava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -63,7 +63,6 @@ $(NAME):: $(addprefix $(BIN_DIR), $(OBJS))
 	@echo "$(GREEN)[✓] $(PINK)Pipex$(GREEN) created!!!$(DEF_COLOR)"
 else
 $(NAME):: $(addprefix $(BIN_DIR), $(BOBJS))
-#@rm -rf $(addprefix $(BIN_DIR), $(OBJS)) $(addprefix $(BIN_DIR), $(DEPS))
 	@echo "$(BLUE)\nLinking objects and creating binary program...$(DEF_COLOR)"
 	@cp $(LIBFT_LIB) $(NAME)
 	@$(CC) $(CCFLAGS) $(addprefix $(BIN_DIR), $(BOBJS)) -o $(NAME)
