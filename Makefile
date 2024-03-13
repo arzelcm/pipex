@@ -6,7 +6,7 @@
 #    By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/29 11:50:28 by arcanava          #+#    #+#              #
-#    Updated: 2024/03/13 12:05:20 by arcanava         ###   ########.fr        #
+#    Updated: 2024/03/13 23:27:07 by arcanava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,16 +39,16 @@ BIN_DIR = bin/
 #----MANDATORY----#
 SRCS =	pipex.c \
 		utils.c
-OBJS = $(SRCS:%.c=%.o)
+OBJS = $(SRCS:%.c=$(BIN_DIR)%.o)
 DEPS = $(OBJS:%.o=%.d)
 
 #----BONUS----#
-BSRCS = ft_printf_bonus.c basic_handle_helper_bonus.c complex_handle_helper_bonus.c padding_helper_bonus.c
-BOBJS = $(BSRCS:%.c=%.o)
+BSRCS = 
+BOBJS = $(BSRCS:%.c=$(BIN_DIR)%.o)
 BDEPS = $(BOBJS:%.o=%.d)
 
 #----EXEC----#
-EXEC_PROGRAM = ./$(NAME) input date cats cat ls output
+EXEC_PROGRAM = ./$(NAME) input date cat cat ls output
 
 #----RULES----#
 all:
@@ -56,16 +56,16 @@ all:
 	@$(MAKE) --no-print-directory $(NAME)
 
 ifndef BONUS
-$(NAME):: $(addprefix $(BIN_DIR), $(OBJS))
+$(NAME):: $(OBJS)
 	@printf "\r$(BLUE)Linking objects and creating program...$(DEF_COLOR)\n"
 	@cp $(LIBFT_LIB) $(NAME)
-	@$(CC) $(CCFLAGS) $(addprefix $(BIN_DIR), $(OBJS)) $(LIBFT_LIB) -o $(NAME)
+	@$(CC) $(CCFLAGS) $(OBJS) $(LIBFT_LIB) -o $(NAME)
 	@echo "$(GREEN)[✓] $(PINK)Pipex$(GREEN) created!!!$(DEF_COLOR)"
 else
-$(NAME):: $(addprefix $(BIN_DIR), $(BOBJS))
+$(NAME):: $(BOBJS)
 	@echo "$(BLUE)\nLinking objects and creating binary program...$(DEF_COLOR)"
 	@cp $(LIBFT_LIB) $(NAME)
-	@$(CC) $(CCFLAGS) $(addprefix $(BIN_DIR), $(BOBJS)) -o $(NAME)
+	@$(CC) $(CCFLAGS) $(BOBJS) -o $(NAME)
 	@echo "$(GREEN)[✓] $(PINK)Pipex Bonus$(GREEN) created!!!$(DEF_COLOR)"
 endif
 
@@ -75,7 +75,7 @@ $(NAME)::
 $(BIN_DIR)%.o: %.c Makefile
 	@printf "$(CIAN)\rCompiling: $(PINK)$(notdir $<)...$(DEF_COLOR)\033[2K"
 	@mkdir -p $(BIN_DIR)
-	@$(CC) $(CCFLAGS) -I $(INC_DIR) -MMD -g -c $< -o $@
+	@$(CC) $(CCFLAGS) -MMD -c $< -o $@
 
 clean:
 	@rm -rf $(BIN_DIR)
@@ -87,8 +87,8 @@ fclean: libft_fclean clean mainclean
 
 re: fclean all
 
-bonus: 
-	@$(MAKE) --no-print-directory BONUS=1
+#bonus: 
+#	@$(MAKE) --no-print-directory BONUS=1
 
 bonusre: fclean bonus
 
@@ -113,7 +113,7 @@ compmain: all
 main: compmain
 	@echo "$(GREEN)\n------------\nMain result:\n------------\n$(DEF_COLOR)"
 	@echo "see ./output\n"
-	@$(EXEC_PROGRAM)
+	$(EXEC_PROGRAM)
 
 m: main
 
@@ -138,4 +138,4 @@ t: test
 
 -include $(DEPS)
 
--include $(BDEPS)
+#-include $(BDEPS)

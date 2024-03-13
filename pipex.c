@@ -6,13 +6,12 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 12:02:52 by arcanava          #+#    #+#             */
-/*   Updated: 2024/03/12 21:17:41 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/03/13 23:22:18 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-// TODO: make it void
 void	exec_command(char *command, char **envp)
 {
 	char	**argv;
@@ -24,10 +23,6 @@ void	exec_command(char *command, char **envp)
 	command_path = get_command_path(argv[0], envp);
 	if (!command_path)
 		custom_error(ft_strjoin("command not found: ", argv[0]));
-	if (command_path)
-		free(command_path);
-	if (argv)
-		free_matrix((void **) argv);
 	if (execve(command_path, argv, envp) == -1)
 		error();
 }
@@ -52,10 +47,10 @@ void	set_cmd_funnel(int	i, int prev_read_fd, int pipe_fds[2], char **argv, int a
 		}
 		else if (i == argc - 2)
 		{
-			file_fd = safe_open(argv[argc - 1], O_TRUNC | O_WRONLY);
-			dup1_res = dup2(pipe_fds[0], STDIN_FILENO);
+			file_fd = safe_open(argv[argc - 1], O_CREAT | O_WRONLY | O_TRUNC);
+			dup1_res = dup2(prev_read_fd, STDIN_FILENO);
 			dup2_res = dup2(file_fd, STDOUT_FILENO);
-			close1_res = close(pipe_fds[0]);
+			close1_res = close(prev_read_fd);
 			close2_res = close(file_fd);
 			if (dup1_res == -1 || dup2_res == -1 || close1_res == -1 || close2_res == -1)
 				error();
@@ -77,6 +72,8 @@ int	main(int argc, char **argv, char **envp)
 	int		pipe_fds[2];
 	int		prev_read_fd;
 	pid_t	pid;
+	int		child_status;
+	int		exit_status;
 
 	if (argc < ARG_MIN_COUNT)
 		custom_error("Missing arguments");
@@ -92,16 +89,18 @@ int	main(int argc, char **argv, char **envp)
 			set_cmd_funnel(i, prev_read_fd, pipe_fds, argv, argc);
 			exec_command(argv[i], envp);
 		}
-		else
-			i++;
-	}
-	i = 0;
-	while (i < argc - 3 && pid > 0)
-	{
-		pid = wait(NULL);
-		ft_printf("Process(%i) was finished with exit(%i)\n", (int) pid, errno);
-		// TODO: Wait for child processess to return correct exit status
+		close(pipe_fds[1]);
 		i++;
 	}
-	return (0);
+	exit_status = 0;
+	i = 0;
+	int new_pid;
+	while (i < argc - 3)
+	{
+		new_pid = wait(&child_status);
+		if (pid == new_pid)
+			exit_status = WEXITSTATUS(child_status);
+		i++;
+	}
+	return (exit_status);
 }

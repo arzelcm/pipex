@@ -6,7 +6,7 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 17:04:09 by arcanava          #+#    #+#             */
-/*   Updated: 2024/03/12 21:02:11 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/03/13 23:04:29 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # define PROGRAM_NAME "pipex"
 # define ARG_MIN_COUNT 5
 # define ARG_FIRST_COMMAND_POS 2
+# define FILE_PERMISSIONS 0644
 
 // TODO: Create utils.h
 char	*get_command_path(char *command, char **envp);
