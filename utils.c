@@ -6,7 +6,7 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 12:39:42 by arcanava          #+#    #+#             */
-/*   Updated: 2024/03/13 23:14:02 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/03/14 23:22:56 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,26 @@ int	safe_open(const char *path, int mode)
 	int	res;
 
 	res = open(path, mode, FILE_PERMISSIONS);
+	if (res == -1)
+		error();
+	return (res);
+}
+
+int	safe_dup2(int destination_fd, int origin_fd)
+{
+	int	res;
+
+	res = dup2(destination_fd, origin_fd);
+	if (res == -1)
+		error();
+	return (res);
+}
+
+int	safe_close(int fd)
+{
+	int res;
+
+	res = close(fd);
 	if (res == -1)
 		error();
 	return (res);

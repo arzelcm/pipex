@@ -6,7 +6,7 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 17:04:09 by arcanava          #+#    #+#             */
-/*   Updated: 2024/03/13 23:04:29 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/03/14 22:05:22 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # define ARG_MIN_COUNT 5
 # define ARG_FIRST_COMMAND_POS 2
 # define FILE_PERMISSIONS 0644
+# define NOT_CMD_ARG_COUNT 2
 
 // TODO: Create utils.h
 char	*get_command_path(char *command, char **envp);
@@ -34,5 +35,7 @@ void	custom_error(char *message);
 void	free_matrix(void **matrix);
 int		safe_fork(void);
 int		safe_open(const char *, int);
+int		safe_dup2(int destination_fd, int origin_fd);
+int		safe_close(int fd);
 
 #endif
