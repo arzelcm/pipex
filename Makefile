@@ -6,7 +6,7 @@
 #    By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/29 11:50:28 by arcanava          #+#    #+#              #
-#    Updated: 2024/03/13 23:27:07 by arcanava         ###   ########.fr        #
+#    Updated: 2024/03/14 22:38:50 by arcanava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,6 +47,13 @@ BSRCS =
 BOBJS = $(BSRCS:%.c=$(BIN_DIR)%.o)
 BDEPS = $(BOBJS:%.o=%.d)
 
+#----DEBUG----#
+ifdef DEBUG
+	OBJS = $(SRCS:%.c=$(BIN_DIR)%_debug.o)
+	BOBJS = $(BSRCS:%.c=$(BIN_DIR)%_debug.o)
+	NAME := $(NAME)_debug
+endif
+
 #----EXEC----#
 EXEC_PROGRAM = ./$(NAME) input date cat cat ls output
 
@@ -58,13 +65,11 @@ all:
 ifndef BONUS
 $(NAME):: $(OBJS)
 	@printf "\r$(BLUE)Linking objects and creating program...$(DEF_COLOR)\n"
-	@cp $(LIBFT_LIB) $(NAME)
 	@$(CC) $(CCFLAGS) $(OBJS) $(LIBFT_LIB) -o $(NAME)
 	@echo "$(GREEN)[✓] $(PINK)Pipex$(GREEN) created!!!$(DEF_COLOR)"
 else
 $(NAME):: $(BOBJS)
 	@echo "$(BLUE)\nLinking objects and creating binary program...$(DEF_COLOR)"
-	@cp $(LIBFT_LIB) $(NAME)
 	@$(CC) $(CCFLAGS) $(BOBJS) -o $(NAME)
 	@echo "$(GREEN)[✓] $(PINK)Pipex Bonus$(GREEN) created!!!$(DEF_COLOR)"
 endif
@@ -72,10 +77,17 @@ endif
 $(NAME)::
 	@printf "\r$(YELLOW)Nothing to be done for $(PINK)pipex$(DEF_COLOR)\n"
 
+ifndef DEBUG
 $(BIN_DIR)%.o: %.c Makefile
 	@printf "$(CIAN)\rCompiling: $(PINK)$(notdir $<)...$(DEF_COLOR)\033[2K"
 	@mkdir -p $(BIN_DIR)
 	@$(CC) $(CCFLAGS) -MMD -c $< -o $@
+else
+$(BIN_DIR)%_debug.o: %.c Makefile
+	@printf "$(CIAN)\rCompiling: $(PINK)$(notdir $<)...$(DEF_COLOR)\033[2K"
+	@mkdir -p $(BIN_DIR)
+	@$(CC) -g $(CCFLAGS) -MMD -c $< -o $@
+endif
 
 clean:
 	@rm -rf $(BIN_DIR)
@@ -134,8 +146,30 @@ test: norme leaks
 
 t: test
 
-.PHONY: all clean fclean re bonus bonusre make_libft libft_clean libft_fclean norme main m n nm mn leaks compmain mainclean test t
+debug:
+	@$(MAKE) all DEBUG=1
+
+.PHONY: all \
+		clean \
+		fclean \
+		re \
+		bonus \
+		bonusre \
+		make_libft \
+		libft_clean \
+		libft_fclean \
+		norme \
+		main \
+		m \
+		n \
+		nm \
+		mn \
+		leaks \
+		compmain \
+		mainclean \
+		test \
+		t \
+		debug
 
 -include $(DEPS)
-
-#-include $(BDEPS)
+-include $(BDEPS)

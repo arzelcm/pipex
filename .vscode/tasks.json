@@ -3,7 +3,7 @@
 		{
 			"type": "shell",
 			"label": "make",
-			"command": "make"
+			"command": "make debug"
 		}
 	]
 }
