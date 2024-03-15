@@ -6,13 +6,13 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 12:02:52 by arcanava          #+#    #+#             */
-/*   Updated: 2024/03/14 23:24:28 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/03/15 18:21:14 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-// TODO: Refactor, check unused functions, check error prints sometimes collapse
+// TODO: check unused functions, check error prints sometimes collapse
 void	exec_command(char *command, char **envp)
 {
 	char	**argv;
@@ -28,40 +28,40 @@ void	exec_command(char *command, char **envp)
 		error();
 }
 
-void	set_cmd_funnel(int	i, int prev_read_fd, int pipe_fds[2], char **argv, int argc)
+void	set_redirections(int i, t_pipe_fds *pipe_fds, char **argv, int argc)
 {
 	int		file_fd;
+	int		read_fd;
+	int		write_fd;
 
-	if (i == ARG_FIRST_COMMAND_POS)
+	if (i == FIRST_CMD_ARG_POS)
 	{
 		file_fd = safe_open(argv[1], O_RDONLY);
-		safe_dup2(file_fd, STDIN_FILENO);
-		safe_dup2(pipe_fds[1], STDOUT_FILENO);
-		safe_close(file_fd);
-		safe_close(pipe_fds[1]);
+		read_fd = file_fd;
+		write_fd = pipe_fds->fds[1];
 	}
-	else if (i == argc - 2)
+	else if (i == argc - NOT_CMD_ARG_AMOUNT)
 	{
 		file_fd = safe_open(argv[argc - 1], O_CREAT | O_WRONLY | O_TRUNC);
-		safe_dup2(prev_read_fd, STDIN_FILENO);
-		safe_dup2(file_fd, STDOUT_FILENO);
-		safe_close(prev_read_fd);
-		safe_close(file_fd);
+		read_fd = pipe_fds->prev_read;
+		write_fd = file_fd;
 	}
 	else
 	{
-		safe_dup2(prev_read_fd, STDIN_FILENO);
-		safe_close(prev_read_fd);
-		safe_dup2(pipe_fds[1], STDOUT_FILENO);
-		safe_close(pipe_fds[1]);
+		read_fd = pipe_fds->prev_read;
+		write_fd = pipe_fds->fds[1];
 	}
+	safe_dup2(read_fd, STDIN_FILENO);
+	safe_close(read_fd);
+	safe_dup2(write_fd, STDOUT_FILENO);
+	safe_close(write_fd);
 }
 
 int	wait_child_processes(int child_amount, int last_pid)
 {
 	int	exit_status;
-	int	i;
 	int	child_status;
+	int	i;
 
 	exit_status = 0;
 	i = 0;
@@ -76,29 +76,29 @@ int	wait_child_processes(int child_amount, int last_pid)
 
 int	main(int argc, char **argv, char **envp)
 {
-	int		i;
-	int		pipe_fds[2];
-	int		prev_read_fd;
-	pid_t	pid;
-	int		exit_status;
+	int			i;
+	t_pipe_fds	pipe_fds;
+	pid_t		pid;
+	int			exit_status;
 
-	if (argc < ARG_MIN_COUNT)
+	if (argc < ARG_AMOUNT)
 		custom_error("Missing arguments");
-	i = ARG_FIRST_COMMAND_POS;
-	while (i < argc - 1)
+	else if (argc > ARG_AMOUNT)
+		custom_error("Too many arguments");
+	i = 1;
+	while (++i < argc - 1)
 	{
-		prev_read_fd = pipe_fds[0];
-		if (i != argc - NOT_CMD_ARG_COUNT && pipe(pipe_fds) == -1)
+		pipe_fds.prev_read = pipe_fds.fds[0];
+		if (i != argc - NOT_CMD_ARG_AMOUNT && pipe(pipe_fds.fds) == -1)
 			error();
 		pid = safe_fork();
-		if (pid == 0)
+		if (pid == CHILD_PID)
 		{
-			set_cmd_funnel(i, prev_read_fd, pipe_fds, argv, argc);
+			set_redirections(i, &pipe_fds, argv, argc);
 			exec_command(argv[i], envp);
 		}
-		close(pipe_fds[1]);
-		i++;
+		close(pipe_fds.fds[1]);
 	}
-	exit_status = wait_child_processes(argc - NOT_CMD_ARG_COUNT - 1, pid);
+	exit_status = wait_child_processes(argc - NOT_CMD_ARG_AMOUNT - 1, pid);
 	return (exit_status);
 }

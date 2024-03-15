@@ -6,7 +6,7 @@
 #    By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/29 11:50:28 by arcanava          #+#    #+#              #
-#    Updated: 2024/03/14 22:38:50 by arcanava         ###   ########.fr        #
+#    Updated: 2024/03/15 16:22:27 by arcanava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,8 @@ BIN_DIR = bin/
 
 #----MANDATORY----#
 SRCS =	pipex.c \
-		utils.c
+		utils.c \
+		safe_utils.c
 OBJS = $(SRCS:%.c=$(BIN_DIR)%.o)
 DEPS = $(OBJS:%.o=%.d)
 
@@ -147,7 +148,7 @@ test: norme leaks
 t: test
 
 debug:
-	@$(MAKE) all DEBUG=1
+	@$(MAKE) --no-print-directory all DEBUG=1
 
 .PHONY: all \
 		clean \
