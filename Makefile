@@ -6,13 +6,14 @@
 #    By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/29 11:50:28 by arcanava          #+#    #+#              #
-#    Updated: 2024/03/15 16:22:27 by arcanava         ###   ########.fr        #
+#    Updated: 2024/03/22 17:46:28 by arcanava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # TODO: https://www.gnu.org/software/make/manual/make.html
 
 NAME = pipex
+DEBUG_NAME = pipex_debug
 
 #----COLORS----#
 DEF_COLOR = \033[1;39m
@@ -44,7 +45,9 @@ OBJS = $(SRCS:%.c=$(BIN_DIR)%.o)
 DEPS = $(OBJS:%.o=%.d)
 
 #----BONUS----#
-BSRCS = 
+BSRCS = pipex_bonus.c \
+		utils_bonus.c \
+		safe_utils_bonus.c
 BOBJS = $(BSRCS:%.c=$(BIN_DIR)%.o)
 BDEPS = $(BOBJS:%.o=%.d)
 
@@ -52,7 +55,7 @@ BDEPS = $(BOBJS:%.o=%.d)
 ifdef DEBUG
 	OBJS = $(SRCS:%.c=$(BIN_DIR)%_debug.o)
 	BOBJS = $(BSRCS:%.c=$(BIN_DIR)%_debug.o)
-	NAME := $(NAME)_debug
+	NAME = $(DEBUG_NAME)
 endif
 
 #----EXEC----#
@@ -71,7 +74,7 @@ $(NAME):: $(OBJS)
 else
 $(NAME):: $(BOBJS)
 	@echo "$(BLUE)\nLinking objects and creating binary program...$(DEF_COLOR)"
-	@$(CC) $(CCFLAGS) $(BOBJS) -o $(NAME)
+	@$(CC) $(CCFLAGS) $(BOBJS) $(LIBFT_LIB) -o $(NAME)
 	@echo "$(GREEN)[✓] $(PINK)Pipex Bonus$(GREEN) created!!!$(DEF_COLOR)"
 endif
 
@@ -95,13 +98,13 @@ clean:
 	@echo "$(RED)bin/ deleted$(DEF_COLOR)"
 
 fclean: libft_fclean clean mainclean
-	@rm -f $(NAME)
+	@rm -f $(NAME) $(DEBUG_NAME)
 	@echo "$(RED)Executable deleted$(DEF_COLOR)\n"
 
 re: fclean all
 
-#bonus: 
-#	@$(MAKE) --no-print-directory BONUS=1
+bonus: 
+	@$(MAKE) --no-print-directory BONUS=1
 
 bonusre: fclean bonus
 
