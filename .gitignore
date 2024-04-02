@@ -1,8 +1,12 @@
 pipex
+a.out
 
 bin/
 *.o
 
-a.out
-
 *_debug*
+
+input
+output
+in
+out

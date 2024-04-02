@@ -6,13 +6,12 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 12:02:52 by arcanava          #+#    #+#             */
-/*   Updated: 2024/03/22 17:45:42 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/04/02 19:22:39 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
-// TODO: check unused functions, check error prints sometimes collapse
 void	exec_command(char *command, char **envp)
 {
 	char	**argv;
@@ -40,7 +39,7 @@ void	set_redirections(int i, t_pipe_fds *pipe_fds, char **argv, int argc)
 		read_fd = file_fd;
 		write_fd = pipe_fds->fds[1];
 	}
-	else if (i == argc - NOT_CMD_ARG_AMOUNT)
+	else if (i == argc - 2)
 	{
 		file_fd = safe_open(argv[argc - 1], O_CREAT | O_WRONLY | O_TRUNC);
 		read_fd = pipe_fds->prev_read;
@@ -74,18 +73,39 @@ int	wait_child_processes(int child_amount, int last_pid)
 	return (exit_status);
 }
 
+int	handle_heredoc(int *i, char **argv, t_pipe_fds *pipe_fds)
+{
+	char	*line;
+
+	(void) i;
+	if (ft_strcmp(argv[*i], "here_doc") != EQUAL_STRINGS)
+		return (0);
+	if (pipe(pipe_fds->fds) == -1)
+		error();
+	(*i)++;
+	line = get_next_line(STDIN_FILENO);
+	while (line != NULL
+		&& (ft_strncmp(argv[*i], line, ft_strlen(line) - 1) != EQUAL_STRINGS || ft_strlen(line) <= 1))
+	{
+		write(pipe_fds->fds[1], line, ft_strlen(line));
+		line = get_next_line(STDIN_FILENO);
+	}
+	safe_close(pipe_fds->fds[1]);
+	return (1);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	int			i;
 	t_pipe_fds	pipe_fds;
 	pid_t		pid;
 	int			exit_status;
+	int			here_doc;
 
 	if (argc < ARG_AMOUNT)
 		custom_error("Missing arguments");
-	else if (argc > ARG_AMOUNT)
-		custom_error("Too many arguments");
 	i = 1;
+	here_doc = handle_heredoc(&i, argv, &pipe_fds);
 	while (++i < argc - 1)
 	{
 		pipe_fds.prev_read = pipe_fds.fds[0];
@@ -97,7 +117,7 @@ int	main(int argc, char **argv, char **envp)
 			set_redirections(i, &pipe_fds, argv, argc);
 			exec_command(argv[i], envp);
 		}
-		close(pipe_fds.fds[1]);
+		safe_close(pipe_fds.fds[1]);
 	}
 	exit_status = wait_child_processes(argc - NOT_CMD_ARG_AMOUNT - 1, pid);
 	return (exit_status);

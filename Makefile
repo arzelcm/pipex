@@ -6,7 +6,7 @@
 #    By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/29 11:50:28 by arcanava          #+#    #+#              #
-#    Updated: 2024/03/22 17:46:28 by arcanava         ###   ########.fr        #
+#    Updated: 2024/04/02 13:37:34 by arcanava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -106,6 +106,8 @@ re: fclean all
 bonus: 
 	@$(MAKE) --no-print-directory BONUS=1
 
+b: bonus
+
 bonusre: fclean bonus
 
 make_libft:
@@ -153,6 +155,9 @@ t: test
 debug:
 	@$(MAKE) --no-print-directory all DEBUG=1
 
+debug_bonus:
+	@$(MAKE) --no-print-directory bonus DEBUG=1
+
 .PHONY: all \
 		clean \
 		fclean \
@@ -173,7 +178,8 @@ debug:
 		mainclean \
 		test \
 		t \
-		debug
+		debug \
+		b
 
 -include $(DEPS)
 -include $(BDEPS)
