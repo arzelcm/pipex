@@ -6,7 +6,7 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 12:02:52 by arcanava          #+#    #+#             */
-/*   Updated: 2024/04/02 19:22:39 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/04/03 19:28:07 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,33 +27,29 @@ void	exec_command(char *command, char **envp)
 		error();
 }
 
-void	set_redirections(int i, t_pipe_fds *pipe_fds, char **argv, int argc)
+void	set_redirections(int i, t_pipe_fds *pipe_fds, t_args *args, int heredoc)
 {
-	int		file_fd;
-	int		read_fd;
-	int		write_fd;
+	t_fds	fds;
+	int		open_mode;
 
 	if (i == FIRST_CMD_ARG_POS)
+		init_fds(&fds, safe_open(args->argv[1], O_RDONLY), pipe_fds->fds[1]);
+	else if (i == args->argc - 2)
 	{
-		file_fd = safe_open(argv[1], O_RDONLY);
-		read_fd = file_fd;
-		write_fd = pipe_fds->fds[1];
-	}
-	else if (i == argc - 2)
-	{
-		file_fd = safe_open(argv[argc - 1], O_CREAT | O_WRONLY | O_TRUNC);
-		read_fd = pipe_fds->prev_read;
-		write_fd = file_fd;
+		open_mode = O_CREAT | O_WRONLY | O_TRUNC;
+		if (heredoc)
+			open_mode = O_CREAT | O_WRONLY | O_APPEND;
+		fds.file = safe_open(args->argv[args->argc - 1], open_mode);
+		init_fds(&fds, pipe_fds->prev_read, fds.file);
 	}
 	else
-	{
-		read_fd = pipe_fds->prev_read;
-		write_fd = pipe_fds->fds[1];
-	}
-	safe_dup2(read_fd, STDIN_FILENO);
-	safe_close(read_fd);
-	safe_dup2(write_fd, STDOUT_FILENO);
-	safe_close(write_fd);
+		init_fds(&fds, pipe_fds->prev_read, pipe_fds->fds[1]);
+	if (i != args->argc - 2)
+		safe_close(pipe_fds->fds[0]);
+	safe_dup2(fds.read, STDIN_FILENO);
+	safe_dup2(fds.write, STDOUT_FILENO);
+	safe_close(fds.read);
+	safe_close(fds.write);
 }
 
 int	wait_child_processes(int child_amount, int last_pid)
@@ -76,21 +72,25 @@ int	wait_child_processes(int child_amount, int last_pid)
 int	handle_heredoc(int *i, char **argv, t_pipe_fds *pipe_fds)
 {
 	char	*line;
+	char	*normalized_limiter;
 
-	(void) i;
 	if (ft_strcmp(argv[*i], "here_doc") != EQUAL_STRINGS)
 		return (0);
 	if (pipe(pipe_fds->fds) == -1)
 		error();
 	(*i)++;
-	line = get_next_line(STDIN_FILENO);
+	normalized_limiter = safe_ft_strjoin(argv[*i], "\n");
+	line = "";
 	while (line != NULL
-		&& (ft_strncmp(argv[*i], line, ft_strlen(line) - 1) != EQUAL_STRINGS || ft_strlen(line) <= 1))
+		&& ft_strcmp(normalized_limiter, line) != EQUAL_STRINGS)
 	{
-		write(pipe_fds->fds[1], line, ft_strlen(line));
+		ft_printf("> ");
 		line = get_next_line(STDIN_FILENO);
+		if (write(pipe_fds->fds[1], line, ft_strlen(line)) == -1)
+			error();
 	}
 	safe_close(pipe_fds->fds[1]);
+	free(normalized_limiter);
 	return (1);
 }
 
@@ -99,26 +99,25 @@ int	main(int argc, char **argv, char **envp)
 	int			i;
 	t_pipe_fds	pipe_fds;
 	pid_t		pid;
-	int			exit_status;
+	t_args		args;
 	int			here_doc;
 
 	if (argc < ARG_AMOUNT)
 		custom_error("Missing arguments");
 	i = 1;
+	init_args(&args, argc, argv, envp);
 	here_doc = handle_heredoc(&i, argv, &pipe_fds);
 	while (++i < argc - 1)
 	{
-		pipe_fds.prev_read = pipe_fds.fds[0];
-		if (i != argc - NOT_CMD_ARG_AMOUNT && pipe(pipe_fds.fds) == -1)
-			error();
+		init_pipe(&pipe_fds, &args, i);
 		pid = safe_fork();
 		if (pid == CHILD_PID)
 		{
-			set_redirections(i, &pipe_fds, argv, argc);
+			set_redirections(i, &pipe_fds, &args, here_doc);
 			exec_command(argv[i], envp);
 		}
-		safe_close(pipe_fds.fds[1]);
+		terminate_pipe(&pipe_fds, &args, i, here_doc);
 	}
-	exit_status = wait_child_processes(argc - NOT_CMD_ARG_AMOUNT - 1, pid);
-	return (exit_status);
+	safe_close(pipe_fds.fds[0]);
+	return (wait_child_processes(argc - 3, pid));
 }

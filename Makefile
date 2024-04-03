@@ -6,7 +6,7 @@
 #    By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/29 11:50:28 by arcanava          #+#    #+#              #
-#    Updated: 2024/04/02 13:37:34 by arcanava         ###   ########.fr        #
+#    Updated: 2024/04/03 17:10:27 by arcanava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,8 @@ DEPS = $(OBJS:%.o=%.d)
 #----BONUS----#
 BSRCS = pipex_bonus.c \
 		utils_bonus.c \
-		safe_utils_bonus.c
+		safe_utils_bonus.c \
+		initiators_bonus.c
 BOBJS = $(BSRCS:%.c=$(BIN_DIR)%.o)
 BDEPS = $(BOBJS:%.o=%.d)
 
