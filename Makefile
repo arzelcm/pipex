@@ -6,11 +6,9 @@
 #    By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/29 11:50:28 by arcanava          #+#    #+#              #
-#    Updated: 2024/04/03 17:10:27 by arcanava         ###   ########.fr        #
+#    Updated: 2024/04/04 13:41:46 by arcanava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
-
-# TODO: https://www.gnu.org/software/make/manual/make.html
 
 NAME = pipex
 DEBUG_NAME = pipex_debug

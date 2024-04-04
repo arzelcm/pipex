@@ -6,13 +6,12 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 12:02:52 by arcanava          #+#    #+#             */
-/*   Updated: 2024/03/15 18:21:14 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/04/04 13:41:42 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-// TODO: check unused functions, check error prints sometimes collapse
 void	exec_command(char *command, char **envp)
 {
 	char	**argv;
