@@ -1,9 +1,0 @@
-{
-	"tasks": [
-		{
-			"type": "shell",
-			"label": "make",
-			"command": "make debug_bonus"
-		}
-	]
-}
