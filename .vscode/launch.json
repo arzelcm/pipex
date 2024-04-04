@@ -10,7 +10,7 @@
 			"preLaunchTask": "make",
 			"request": "launch",
 			"program": "${workspaceFolder}/pipex_debug",
-			"args": ["input", "cat", "cat", "output"],
+			"args": ["input", "here_doc", "cat", "cat", "output"],
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}",
 			"environment": [],

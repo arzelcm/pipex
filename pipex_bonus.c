@@ -6,7 +6,7 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 12:02:52 by arcanava          #+#    #+#             */
-/*   Updated: 2024/04/03 19:28:07 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/04/04 13:22:16 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,17 +69,19 @@ int	wait_child_processes(int child_amount, int last_pid)
 	return (exit_status);
 }
 
-int	handle_heredoc(int *i, char **argv, t_pipe_fds *pipe_fds)
+int	handle_heredoc(int *i, t_args *args, t_pipe_fds *pipe_fds)
 {
 	char	*line;
 	char	*normalized_limiter;
 
-	if (ft_strcmp(argv[*i], "here_doc") != EQUAL_STRINGS)
+	if (ft_strcmp(args->argv[*i], "here_doc") != EQUAL_STRINGS)
 		return (0);
+	if (args->argc < ARG_AMOUNT + 1)
+		custom_error("Missing arguments");
 	if (pipe(pipe_fds->fds) == -1)
 		error();
 	(*i)++;
-	normalized_limiter = safe_ft_strjoin(argv[*i], "\n");
+	normalized_limiter = safe_ft_strjoin(args->argv[*i], "\n");
 	line = "";
 	while (line != NULL
 		&& ft_strcmp(normalized_limiter, line) != EQUAL_STRINGS)
@@ -104,9 +106,9 @@ int	main(int argc, char **argv, char **envp)
 
 	if (argc < ARG_AMOUNT)
 		custom_error("Missing arguments");
-	i = 1;
 	init_args(&args, argc, argv, envp);
-	here_doc = handle_heredoc(&i, argv, &pipe_fds);
+	i = 1;
+	here_doc = handle_heredoc(&i, &args, &pipe_fds);
 	while (++i < argc - 1)
 	{
 		init_pipe(&pipe_fds, &args, i);
