@@ -6,7 +6,7 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 17:04:09 by arcanava          #+#    #+#             */
-/*   Updated: 2024/04/04 13:13:02 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/04/05 14:16:02 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,6 @@
 # define NOT_CMD_ARG_AMOUNT 2
 # define CHILD_PID 0
 
-typedef struct s_pipe_fds
-{
-	int	fds[2];
-	int	prev_read;
-}	t_pipe_fds;
 
 typedef struct s_args
 {
@@ -36,6 +31,17 @@ typedef struct s_args
 	char	**envp;
 	int		argc;
 }	t_args;
+
+typedef struct s_context
+{
+	char	**argv;
+	char	**envp;
+	int		argc;
+	int		fds[2];
+	int		prev_read;
+	int		file_fd;
+	int		i;
+}	t_context;
 
 typedef struct s_fds
 {
@@ -62,11 +68,11 @@ int		safe_close(int fd);
 
 char	*safe_ft_strjoin(char const *s1, char const *s2);
 
-void	init_args(t_args *args, int argc, char **argv, char **envp);
+void	init_context(t_context *context, int argc, char **argv, char **envp);
 
-void	init_pipe(t_pipe_fds *pipe_fds, t_args *args, int i);
+void	init_pipe(t_context *context, int i);
 
-void	terminate_pipe(t_pipe_fds *pipe_fds, t_args *args, int i, int here_doc);
+void	terminate_pipe(t_context *context, int i, int here_doc);
 
 void	init_fds(t_fds *fds, int read, int write);
 

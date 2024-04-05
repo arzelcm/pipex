@@ -6,32 +6,36 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 17:00:54 by arcanava          #+#    #+#             */
-/*   Updated: 2024/04/03 18:46:34 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/04/05 14:16:15 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
-void	init_args(t_args *args, int argc, char **argv, char **envp)
+void	init_context(t_context *context, int argc, char **argv, char **envp)
 {
-	args->argc = argc;
-	args->argv = argv;
-	args->envp = envp;
+	context->argc = argc;
+	context->argv = argv;
+	context->envp = envp;
+	context->fds[0] = -1;
+	context->fds[1] = -1;
+	context->prev_read = -1;
+	context->file_fd = -1;
 }
 
-void	init_pipe(t_pipe_fds *pipe_fds, t_args *args, int i)
+void	init_pipe(t_context *context, int i)
 {
-	pipe_fds->prev_read = pipe_fds->fds[0];
-	if (i < args->argc - NOT_CMD_ARG_AMOUNT && pipe(pipe_fds->fds) == -1)
+	context->prev_read = context->fds[0];
+	if (i < context->argc - NOT_CMD_ARG_AMOUNT && pipe(context->fds) == -1)
 		error();
 }
 
-void	terminate_pipe(t_pipe_fds *pipe_fds, t_args *args, int i, int here_doc)
+void	terminate_pipe(t_context *context, int i, int here_doc)
 {
 	if (here_doc && i == 3)
-		safe_close(pipe_fds->prev_read);
-	if (i != args->argc - NOT_CMD_ARG_AMOUNT)
-		safe_close(pipe_fds->fds[1]);
+		safe_close(context->prev_read);
+	if (i != context->argc - NOT_CMD_ARG_AMOUNT)
+		safe_close(context->fds[1]);
 }
 
 void	init_fds(t_fds *fds, int read, int write)
