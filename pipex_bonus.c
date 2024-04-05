@@ -6,7 +6,7 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 12:02:52 by arcanava          #+#    #+#             */
-/*   Updated: 2024/04/05 15:37:52 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/04/05 19:36:08 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,15 +83,17 @@ int	handle_heredoc(int *i, t_context *context)
 		error(context);
 	(*i)++;
 	normalized_limiter = safe_ft_strjoin(context->argv[*i], "\n", context);
-	line = "";
-	while (line != NULL
-		&& ft_strcmp(normalized_limiter, line) != EQUAL_STRINGS)
+	ft_printf("> ");
+	line = get_next_line(STDIN_FILENO);
+	while (line != NULL && ft_strcmp(normalized_limiter, line) != EQUAL_STRINGS)
 	{
 		ft_printf("> ");
 		if (line && write(context->fds[1], line, ft_strlen(line)) == -1)
 			error(context);
+		free(line);
 		line = get_next_line(STDIN_FILENO);
 	}
+	free(line);
 	safe_close(&context->fds[1], context);
 	free(normalized_limiter);
 	return (1);
