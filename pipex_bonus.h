@@ -6,7 +6,7 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 17:04:09 by arcanava          #+#    #+#             */
-/*   Updated: 2024/04/05 15:00:09 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/04/05 15:38:04 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int		safe_open(const char *path, int mode, t_context *context);
 
 int		safe_dup2(int destination_fd, int origin_fd, t_context *context);
 
-int		safe_close(int fd, t_context *context);
+int		safe_close(int *fd, t_context *context);
 
 char	*safe_ft_strjoin(char const *s1, char const *s2, t_context *context);
 
@@ -66,5 +66,7 @@ void	init_pipe(int i, t_context *context);
 void	terminate_pipe(int i, int here_doc, t_context *context);
 
 void	init_fds(t_fds *fds, int read, int write);
+
+void	terminate_context(t_context *context);
 
 #endif

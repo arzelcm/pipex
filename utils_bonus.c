@@ -6,7 +6,7 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 12:39:42 by arcanava          #+#    #+#             */
-/*   Updated: 2024/04/05 14:33:32 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/04/05 19:27:05 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ char	*get_command_path(char *command, char **envp, t_context *context)
 
 void	error(t_context *context)
 {
-	(void) context;
 	perror(PROGRAM_NAME);
+	terminate_context(context);
 	exit(EXIT_FAILURE);
 }
 

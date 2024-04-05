@@ -6,7 +6,7 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:21:21 by arcanava          #+#    #+#             */
-/*   Updated: 2024/04/05 14:24:40 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/04/05 15:38:58 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,16 @@ int	safe_dup2(int destination_fd, int origin_fd, t_context *context)
 	return (res);
 }
 
-int	safe_close(int fd, t_context *context)
+int	safe_close(int *fd, t_context *context)
 {
 	int	res;
 
-	res = close(fd);
+	if (*fd == -1)
+		return (-1);
+	res = close(*fd);
 	if (res == -1)
 		error(context);
+	*fd = -1;
 	return (res);
 }
 

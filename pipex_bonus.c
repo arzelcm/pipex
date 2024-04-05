@@ -6,7 +6,7 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 12:02:52 by arcanava          #+#    #+#             */
-/*   Updated: 2024/04/05 15:00:13 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/04/05 15:37:52 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,11 @@ void	set_redirections(int i, int heredoc, t_context *context)
 	else
 		init_fds(&fds, context->prev_read, context->fds[1]);
 	if (i != context->argc - 2)
-		safe_close(context->fds[0], context);
+		safe_close(&context->fds[0], context);
 	safe_dup2(fds.read, STDIN_FILENO, context);
 	safe_dup2(fds.write, STDOUT_FILENO, context);
-	safe_close(fds.read, context);
-	safe_close(fds.write, context);
+	safe_close(&fds.read, context);
+	safe_close(&fds.write, context);
 }
 
 int	wait_child_processes(int child_amount, int last_pid)
@@ -92,7 +92,7 @@ int	handle_heredoc(int *i, t_context *context)
 			error(context);
 		line = get_next_line(STDIN_FILENO);
 	}
-	safe_close(context->fds[1], context);
+	safe_close(&context->fds[1], context);
 	free(normalized_limiter);
 	return (1);
 }
@@ -120,6 +120,6 @@ int	main(int argc, char **argv, char **envp)
 		}
 		terminate_pipe(i, here_doc, &context);
 	}
-	safe_close(context.fds[0], &context);
+	safe_close(&context.fds[0], &context);
 	return (wait_child_processes(argc - 3, pid));
 }
