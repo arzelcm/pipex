@@ -6,7 +6,7 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 17:04:09 by arcanava          #+#    #+#             */
-/*   Updated: 2024/04/05 14:16:02 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/04/05 15:00:09 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,11 @@
 # define NOT_CMD_ARG_AMOUNT 2
 # define CHILD_PID 0
 
-
-typedef struct s_args
+typedef struct s_fds
 {
-	char	**argv;
-	char	**envp;
-	int		argc;
-}	t_args;
+	int	read;
+	int	write;
+}	t_fds;
 
 typedef struct s_context
 {
@@ -43,36 +41,29 @@ typedef struct s_context
 	int		i;
 }	t_context;
 
-typedef struct s_fds
-{
-	int	read;
-	int	write;
-	int	file;
-}	t_fds;
+char	*get_command_path(char *command, char **envp, t_context *context);
 
-char	*get_command_path(char *command, char **envp);
-
-void	error(void);
+void	error(t_context *context);
 
 void	custom_error(char *message);
 
 void	free_matrix(void **matrix);
 
-int		safe_fork(void);
+int		safe_fork(t_context *context);
 
-int		safe_open(const char *path, int mode);
+int		safe_open(const char *path, int mode, t_context *context);
 
-int		safe_dup2(int destination_fd, int origin_fd);
+int		safe_dup2(int destination_fd, int origin_fd, t_context *context);
 
-int		safe_close(int fd);
+int		safe_close(int fd, t_context *context);
 
-char	*safe_ft_strjoin(char const *s1, char const *s2);
+char	*safe_ft_strjoin(char const *s1, char const *s2, t_context *context);
 
-void	init_context(t_context *context, int argc, char **argv, char **envp);
+void	init_context(int argc, char **argv, char **envp, t_context *context);
 
-void	init_pipe(t_context *context, int i);
+void	init_pipe(int i, t_context *context);
 
-void	terminate_pipe(t_context *context, int i, int here_doc);
+void	terminate_pipe(int i, int here_doc, t_context *context);
 
 void	init_fds(t_fds *fds, int read, int write);
 
