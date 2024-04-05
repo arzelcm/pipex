@@ -6,7 +6,7 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 12:02:52 by arcanava          #+#    #+#             */
-/*   Updated: 2024/04/04 13:22:16 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/04/05 13:50:18 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,9 +87,9 @@ int	handle_heredoc(int *i, t_args *args, t_pipe_fds *pipe_fds)
 		&& ft_strcmp(normalized_limiter, line) != EQUAL_STRINGS)
 	{
 		ft_printf("> ");
-		line = get_next_line(STDIN_FILENO);
-		if (write(pipe_fds->fds[1], line, ft_strlen(line)) == -1)
+		if (line && write(pipe_fds->fds[1], line, ft_strlen(line)) == -1)
 			error();
+		line = get_next_line(STDIN_FILENO);
 	}
 	safe_close(pipe_fds->fds[1]);
 	free(normalized_limiter);
