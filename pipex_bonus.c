@@ -6,7 +6,7 @@
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 12:02:52 by arcanava          #+#    #+#             */
-/*   Updated: 2024/04/05 19:36:08 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/04/08 16:06:55 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,9 +106,9 @@ int	main(int argc, char **argv, char **envp)
 	pid_t		pid;
 	int			here_doc;
 
-	init_context(argc, argv, envp, &context);
 	if (argc < ARG_AMOUNT)
 		custom_error("Missing arguments");
+	init_context(argc, argv, envp, &context);
 	i = 1;
 	here_doc = handle_heredoc(&i, &context);
 	while (++i < argc - 1)
