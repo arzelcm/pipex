@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   initiators_bonus.c                                 :+:      :+:    :+:   */
+/*   initiators.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 17:00:54 by arcanava          #+#    #+#             */
-/*   Updated: 2024/04/05 15:37:22 by arcanava         ###   ########.fr       */
+/*   Updated: 2024/04/08 16:10:02 by arcanava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex_bonus.h"
+#include "pipex.h"
 
 void	init_context(int argc, char **argv, char **envp, t_context *context)
 {
@@ -40,10 +40,8 @@ void	init_pipe(int i, t_context *context)
 		error(context);
 }
 
-void	terminate_pipe(int i, int here_doc, t_context *context)
+void	terminate_pipe(int i, t_context *context)
 {
-	if (here_doc && i == 3)
-		safe_close(&context->prev_read, context);
 	if (i != context->argc - NOT_CMD_ARG_AMOUNT)
 		safe_close(&context->fds[1], context);
 }

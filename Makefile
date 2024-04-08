@@ -6,7 +6,7 @@
 #    By: arcanava <arcanava@student.42barcel>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/29 11:50:28 by arcanava          #+#    #+#              #
-#    Updated: 2024/04/04 13:41:46 by arcanava         ###   ########.fr        #
+#    Updated: 2024/04/08 18:10:20 by arcanava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,8 @@ BIN_DIR = bin/
 #----MANDATORY----#
 SRCS =	pipex.c \
 		utils.c \
-		safe_utils.c
+		safe_utils.c \
+		initiators.c
 OBJS = $(SRCS:%.c=$(BIN_DIR)%.o)
 DEPS = $(OBJS:%.o=%.d)
 
